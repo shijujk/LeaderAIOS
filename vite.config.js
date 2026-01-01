@@ -3,9 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/LeaderAIOS/",
-  server: {
-    host: true,
-    allowedHosts: true
-  }
+  base: "/LeaderAIOS/"
 });
