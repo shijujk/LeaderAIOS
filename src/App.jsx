@@ -102,7 +102,7 @@ const BLOCKS = [
   {
     id: "meetings2",
     title: "Meeting Block 2",
-    time: "14:00–15:30",
+    time: "14:00–16:00",
     intent: "Execution-focused alignment",
     icon: Layers,
     colorHint: "from-sky-50 to-sky-100",
@@ -128,7 +128,7 @@ const BLOCKS = [
   {
     id: "future",
     title: "Important, Not Urgent (Build the Future)",
-    time: "15:30–16:30",
+    time: "16:00–17:00",
     intent: "Protect strategic work",
     icon: Target,
     colorHint: "from-emerald-50 to-emerald-100",
@@ -154,7 +154,7 @@ const BLOCKS = [
   {
     id: "inspect",
     title: "Checkpoint (Inspect & Adjust)",
-    time: "16:30–17:00",
+    time: "17:00–18:00",
     intent: "Course-correct before the day ends",
     icon: ShieldCheck,
     colorHint: "from-violet-50 to-violet-100",
