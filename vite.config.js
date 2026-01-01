@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/LeaderAIOS/",
   server: {
-    allowedHosts: "all"
+    host: true,
+    allowedHosts: true
   }
 });
