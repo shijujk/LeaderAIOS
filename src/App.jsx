@@ -14,11 +14,43 @@ import {
   ShieldCheck,
   ChevronRight,
   Search,
+  Globe,
 } from "lucide-react";
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
 const BLOCKS = [
+  // NEW: Optional morning global alignment slot (time-zone driven)
+  {
+    id: "global-am",
+    title: "Global / Cross-functional Alignment",
+    time: "07:30–08:30",
+    intent: "Time-zone driven alignment, bounded and intentional",
+    icon: Globe,
+    optional: true,
+    tzDriven: true,
+    colorHint: "from-slate-50 to-slate-100",
+    ai: [
+      "Compress global context (decisions, risks, dependencies)",
+      "Prepare a crisp brief: context, ask, constraints, options",
+      "Draft follow-ups for owners (so closure is fast)",
+    ],
+    human: [
+      "Drive to decisions and explicit asks",
+      "Resolve cross-region dependencies",
+      "Close with owners + deadlines",
+    ],
+    outputs: [
+      "Global alignment",
+      "Decisions / next steps",
+      "Owners + due dates",
+    ],
+    artifacts: [
+      "Global Decisions Log",
+      "Cross-region Action Log",
+    ],
+  },
+
   {
     id: "orient",
     title: "Morning Insight Intake & Triage",
@@ -41,10 +73,7 @@ const BLOCKS = [
       "Top 3 U&I items",
       "Deprioritized list (parked)",
     ],
-    artifacts: [
-      "Outcome Log (today)",
-      "Priority Queue",
-    ],
+    artifacts: ["Outcome Log (today)", "Priority Queue"],
   },
   {
     id: "resolve",
@@ -68,10 +97,7 @@ const BLOCKS = [
       "Blockers cleared / escalations sent",
       "Owner + deadline for every action",
     ],
-    artifacts: [
-      "Decision Log",
-      "Commitment Log",
-    ],
+    artifacts: ["Decision Log", "Commitment Log"],
   },
   {
     id: "meetings1",
@@ -90,14 +116,8 @@ const BLOCKS = [
       "Keep meeting to decision + action closure",
       "End by confirming owners and dates",
     ],
-    outputs: [
-      "Meeting outcomes (decisions/actions/risks)",
-      "Aligned stakeholders",
-    ],
-    artifacts: [
-      "Meeting Briefs",
-      "Action Register",
-    ],
+    outputs: ["Meeting outcomes (decisions/actions/risks)", "Aligned stakeholders"],
+    artifacts: ["Meeting Briefs", "Action Register"],
   },
   {
     id: "meetings2",
@@ -116,14 +136,8 @@ const BLOCKS = [
       "Confirm dependency owners + next checkpoint",
       "Kill low-value meetings",
     ],
-    outputs: [
-      "Dependencies unblocked",
-      "Course corrections agreed",
-    ],
-    artifacts: [
-      "Dependency Map (lightweight)",
-      "Risk Register",
-    ],
+    outputs: ["Dependencies unblocked", "Course corrections agreed"],
+    artifacts: ["Dependency Map (lightweight)", "Risk Register"],
   },
   {
     id: "future",
@@ -142,14 +156,8 @@ const BLOCKS = [
       "Make one strategic call or alignment note",
       "Optional: 1 coaching/talent touch",
     ],
-    outputs: [
-      "One artifact (doc/note/plan)",
-      "Strategic clarity increment",
-    ],
-    artifacts: [
-      "Strategy Notes",
-      "Architecture/Program Artifacts",
-    ],
+    outputs: ["One artifact (doc/note/plan)", "Strategic clarity increment"],
+    artifacts: ["Strategy Notes", "Architecture/Program Artifacts"],
   },
   {
     id: "inspect",
@@ -168,14 +176,8 @@ const BLOCKS = [
       "Update commitments",
       "Protect tomorrow’s plan",
     ],
-    outputs: [
-      "1–2 course corrections",
-      "Updated risk/commitment view",
-    ],
-    artifacts: [
-      "Daily Summary",
-      "Updated Commitment Log",
-    ],
+    outputs: ["1–2 course corrections", "Updated risk/commitment view"],
+    artifacts: ["Daily Summary", "Updated Commitment Log"],
   },
   {
     id: "close",
@@ -194,14 +196,8 @@ const BLOCKS = [
       "Confirm tomorrow’s first action",
       "Shutdown mentally",
     ],
-    outputs: [
-      "Tomorrow draft plan",
-      "Learning captured",
-    ],
-    artifacts: [
-      "Learning Log",
-      "Tomorrow Brief Pack",
-    ],
+    outputs: ["Tomorrow draft plan", "Learning captured"],
+    artifacts: ["Learning Log", "Tomorrow Brief Pack"],
   },
 ];
 
@@ -213,10 +209,12 @@ function Pill({ children, tone = "neutral" }) {
     out: "bg-emerald-50 text-emerald-800 border-emerald-200",
   };
   return (
-    <span className={cn(
-      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-      tones[tone] || tones.neutral
-    )}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+        tones[tone] || tones.neutral
+      )}
+    >
       {children}
     </span>
   );
@@ -227,20 +225,22 @@ function SectionCard({ title, icon: Icon, tone = "neutral", children }) {
     tone === "ai"
       ? "border-slate-900/10 bg-slate-900/[0.02]"
       : tone === "out"
-        ? "border-emerald-200 bg-emerald-50/40"
-        : "border-slate-200 bg-white";
+      ? "border-emerald-200 bg-emerald-50/40"
+      : "border-slate-200 bg-white";
 
   return (
     <div className={cn("rounded-2xl border p-4 shadow-sm", toneClass)}>
       <div className="flex items-center gap-2">
-        <div className={cn(
-          "grid h-9 w-9 place-items-center rounded-xl",
-          tone === "ai"
-            ? "bg-slate-900 text-white"
-            : tone === "out"
+        <div
+          className={cn(
+            "grid h-9 w-9 place-items-center rounded-xl",
+            tone === "ai"
+              ? "bg-slate-900 text-white"
+              : tone === "out"
               ? "bg-emerald-600 text-white"
               : "bg-slate-100 text-slate-700"
-        )}>
+          )}
+        >
           <Icon className="h-5 w-5" />
         </div>
         <div className="text-sm font-semibold text-slate-900">{title}</div>
@@ -252,6 +252,12 @@ function SectionCard({ title, icon: Icon, tone = "neutral", children }) {
 
 function BlockTile({ block, active, onClick }) {
   const Icon = block.icon;
+  const badgeText = block.optional
+    ? block.tzDriven
+      ? "Optional • Time-zone driven"
+      : "Optional"
+    : "";
+
   return (
     <button
       onClick={onClick}
@@ -274,16 +280,36 @@ function BlockTile({ block, active, onClick }) {
             <Icon className={cn("h-5 w-5", active ? "text-white" : "text-slate-700")} />
           </div>
           <div>
-            <div className={cn("text-sm font-semibold", active ? "text-white" : "text-slate-900")}>
-              {block.title}
+            <div className="flex items-center gap-2">
+              <div className={cn("text-sm font-semibold", active ? "text-white" : "text-slate-900")}>
+                {block.title}
+              </div>
+              {badgeText ? (
+                <span
+                  className={cn(
+                    "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold",
+                    active
+                      ? "border-white/20 bg-white/10 text-white"
+                      : "border-slate-200 bg-slate-50 text-slate-700"
+                  )}
+                >
+                  {badgeText}
+                </span>
+              ) : null}
             </div>
+
             <div className={cn("mt-1 flex items-center gap-2 text-xs", active ? "text-white/80" : "text-slate-500")}>
               <Clock className="h-3.5 w-3.5" />
               <span>{block.time}</span>
             </div>
           </div>
         </div>
-        <ChevronRight className={cn("h-5 w-5 transition", active ? "text-white" : "text-slate-300 group-hover:text-slate-400")} />
+        <ChevronRight
+          className={cn(
+            "h-5 w-5 transition",
+            active ? "text-white" : "text-slate-300 group-hover:text-slate-400"
+          )}
+        />
       </div>
       <div className={cn("mt-3 text-xs leading-relaxed", active ? "text-white/80" : "text-slate-600")}>
         {block.intent}
@@ -332,6 +358,12 @@ export default function LeaderDayOSInteractive() {
     }
   }, [filtered, activeId]);
 
+  const activeBadgeText = active?.optional
+    ? active?.tzDriven
+      ? "Optional • Time-zone driven"
+      : "Optional"
+    : "";
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-6xl px-4 py-8">
@@ -379,12 +411,7 @@ export default function LeaderDayOSInteractive() {
           <div className="md:col-span-5">
             <div className="space-y-3">
               {filtered.map((b) => (
-                <BlockTile
-                  key={b.id}
-                  block={b}
-                  active={b.id === activeId}
-                  onClick={() => setActiveId(b.id)}
-                />
+                <BlockTile key={b.id} block={b} active={b.id === activeId} onClick={() => setActiveId(b.id)} />
               ))}
               {!filtered.length && (
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
@@ -408,7 +435,13 @@ export default function LeaderDayOSInteractive() {
                   <div>
                     <div className="flex items-center gap-2">
                       <div className="text-lg font-semibold text-slate-900">{active.title}</div>
+                      {activeBadgeText ? (
+                        <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                          {activeBadgeText}
+                        </span>
+                      ) : null}
                     </div>
+
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-600">
                       <Pill>
                         <Clock className="h-3.5 w-3.5" /> {active.time}
