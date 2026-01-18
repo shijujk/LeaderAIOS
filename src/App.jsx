@@ -59,7 +59,7 @@ const BLOCKS = [
     icon: Sparkles,
     colorHint: "from-slate-50 to-slate-100",
     ai: [
-      "Pull signals from calendar, mail/chat, dashboards, incidents, OKRs",
+      "Pull signals from calendar, mail/chat, dashboards, CDETS, JIRA etc",
       "Cluster into Urgent & Important / Important-Not-Urgent / Noise",
       "Draft 3 outcomes for the day + suggested deprioritization",
     ],
